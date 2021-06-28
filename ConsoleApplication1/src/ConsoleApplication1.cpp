@@ -53,12 +53,12 @@ void SimpleMeasurement()
 	if (getError(message, 1024))
 	{
 		cout << "ERROR: " << message << endl;
-		_getch();
+		(void) getchar();
 		return;
 	}
 
 	// waits to close the command prompt until an input from the user is done
-	_getch();
+	(void) getchar();
 }
 
 void ExportDataAndImage()
@@ -75,7 +75,7 @@ void ExportDataAndImage()
 	if (getError(message, 1024))
 	{
 		cout << "ERROR: " << message << endl;
-		_getch();
+		(void) getchar();
 		return;
 	}
 
@@ -109,7 +109,7 @@ void ExportDataAndImage()
 	if (getError(message, 1024))
 	{
 		cout << "ERROR: " << message << endl;
-		_getch();
+		(void) getchar();
 		return;
 	}
 
@@ -122,7 +122,7 @@ void ExportDataAndImage()
 	closeProbe(Probe);
 	closeDevice(Dev);
 
-	_getch();
+	(void) getchar();
 }
 
 void AveragingAndImagingSpeed()
@@ -139,7 +139,7 @@ void AveragingAndImagingSpeed()
 	if (getError(message, 1024))
 	{
 		cout << "ERROR: " << message << endl;
-		_getch();
+		(void) getchar();
 		return;
 	}
 
@@ -180,7 +180,7 @@ void AveragingAndImagingSpeed()
 	if (getError(message, 1024))
 	{
 		cout << "ERROR: " << message << endl;
-		_getch();
+		(void) getchar();
 		return;
 	}
 
@@ -193,7 +193,7 @@ void AveragingAndImagingSpeed()
 	closeProbe(Probe);
 	closeDevice(Dev);
 
-	_getch();
+	(void) getchar();
 }
 
 void VolumeScanPattern()
@@ -212,7 +212,7 @@ void VolumeScanPattern()
 	if (getError(message, 1024))
 	{
 		cout << "ERROR: " << message << endl;
-		_getch();
+		(void) getchar();
 		return;
 	}
 
@@ -262,7 +262,7 @@ void VolumeScanPattern()
 	if (getError(message, 1024))
 	{
 		cout << "ERROR: " << message << endl;
-		_getch();
+		(void) getchar();
 		return;
 	}
 
@@ -277,7 +277,7 @@ void VolumeScanPattern()
 	closeProbe(Probe);
 	closeDevice(Dev);
 
-	_getch();
+	(void) getchar();
 }
 
 void ModifyScanPatterns()
@@ -294,7 +294,7 @@ void ModifyScanPatterns()
 	if (getError(message, 1024))
 	{
 		cout << "ERROR: " << message << endl;
-		_getch();
+		(void) getchar();
 		return;
 	}
 
@@ -327,7 +327,7 @@ void ModifyScanPatterns()
 	if (getError(message, 1024))
 	{
 		cout << "ERROR: " << message << endl;
-		_getch();
+		(void) getchar();
 		return;
 	}
 
@@ -340,7 +340,7 @@ void ModifyScanPatterns()
 	closeProbe(Probe);
 	closeDevice(Dev);
 
-	_getch();
+	(void) getchar();
 }
 
 int main()
@@ -352,7 +352,7 @@ int main()
 	cout << "d: Acquisition of a volume pattern with averaging\n";
 	cout << "e: Rotation, shifting and zooming of a scan pattern\n";
 
-	char c = _getch();
+	char c = getchar();
 	switch (c)
 	{
 	case 'a': SimpleMeasurement();
@@ -366,7 +366,7 @@ int main()
 	case 'e': ModifyScanPatterns();
 		break;
 	}
-	_getch();
+	(void) getchar();
 	return 0;
 }
 
