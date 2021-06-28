@@ -15,16 +15,14 @@ To get A-scan OCT using bench top setup and Thorlabs SDK and to visualize both s
 ## To Do:
 
 
-1. Get A, B scan images using the SDK and the std. objective lens to learn the SDK. 
-The configration we are using is <img src="std_setup.png"  width="450" height="450">
+1. Get A, B scan images using the SDK and the std. objective lens to learn the SDK. The std. desktop configration we are using is:
+
+<img src="doc/std_setup.png">
 
 2. Then, develop the configuration file(.ini) for the benchtop setup describing the objective lenses as well as correction factors for the draw and scan feature.
-
 3. Acqurie the A-scan OCT and scan by moving the sample target and compare the data acquired with std. objective lens. 
 
 The above three steps proves:
 * The ability to use SDK
-* The reference arm is correct setup. 
-
-
-4. How to interface our custom endoscopic electromangtic scanner with thorlabs imagaing system. 
+* The reference arm is correctly setup. 
+4. How to interface our [custom endoscopic electromangtic scanner](https://ieeexplore.ieee.org/abstract/document/8629990) with thorlabs imagaing system?. 
