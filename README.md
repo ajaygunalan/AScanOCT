@@ -2,6 +2,7 @@
 
 To get A-scan OCT using bench top setup and Thorlabs SDK and to visualize both spectral raw data (Intensity vs Depth)  and processed A scan data(Signal vs Depth).
 
+<img src="AScan.PNG"  width="450" height="450">
 
 ##  Steps 
 
