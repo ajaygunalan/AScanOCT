@@ -11,7 +11,7 @@ void SimpleMeasurement()
 {
 	// initialization of device, probe and processing handles
 	OCTDeviceHandle Dev = initDevice();
-	ProbeHandle Probe = initProbe(Dev, "Probe"); // pass the correct string for configuration file of the appropiate objective which are named normally ProbeLSMxx
+	ProbeHandle Probe = initProbe(Dev, "Probe_Standard_OCTG_LSM03.ini"); // pass the correct string for configuration file of the appropiate objective which are named normally ProbeLSMxx
 	ProcessingHandle Proc = createProcessingForDevice(Dev);
 
 	// the #RawDataHandle will be used to get the raw data handle and will contain the data from the detector (e.g. line scan camera is SD-OCT systems) without any modification
@@ -36,7 +36,7 @@ void SimpleMeasurement()
 	stopMeasurement(Dev);
 
 	// exports the processed data to a csv-file to the specified folder. For more information about the data export see #ExportDataAndImage
-	exportData(BScan, DataExportFormat::DataExport_CSV, "C:\\test_oct_data.csv");
+	exportData(BScan, DataExportFormat::DataExport_CSV, "C:\Ajay_OCT\Output\test_oct_data.csv");
 
 	// clear up everything 
 	clearScanPattern(Pattern);
@@ -91,7 +91,7 @@ void ExportDataAndImage()
 	stopMeasurement(Dev);
 
 	// Exports the processed data to a csv-file to the specified folder. Several different export formats are available, see #DataExportFormat
-	exportData(BScan, DataExportFormat::DataExport_CSV, "C:\\test_oct_data.csv");
+	exportData(BScan, DataExportFormat::DataExport_CSV, "C:\Ajay_OCT\Output\test_oct_data.csv");
 
 	// The OCT image can be exported as an image in common image format as well. It needs to be colored for that, e.g. the colormap and boundaries for the coloring need to be defined.
 	// #ColoringHandle with specified #ColorScheme, here simple black and white, and #ColoringByteOrder
@@ -100,10 +100,10 @@ void ExportDataAndImage()
 	setColoringBoundaries(Coloring, 0.0, 70.0);
 	// Exports the processed data to an image with the specified slice normal direction since this will result in 2D-images.
 	// To get the B-scan in one image with depth and scan field as axes for a single B-scan #Direction_3 is chosen.
-	exportDataAsImage(BScan, Coloring, ColoredDataExport_JPG, Direction_3, "C:\\test_oct_image.jpg", ExportOption_DrawScaleBar | ExportOption_DrawMarkers | ExportOption_UsePhysicalAspectRatio);
+	exportDataAsImage(BScan, Coloring, ColoredDataExport_JPG, Direction_3, "C:\Ajay_OCT\Output\test_oct_image.jpg", ExportOption_DrawScaleBar | ExportOption_DrawMarkers | ExportOption_UsePhysicalAspectRatio);
 
 	// The unprocessed data from the detector in #RawDataHandle can be exported as well, here to a binary raw/srm file
-	exportRawData(Raw, RawDataExportFormat::RawDataExport_RAW, "C::\\test_raw_data.raw");
+	exportRawData(Raw, RawDataExportFormat::RawDataExport_RAW, "C:\Ajay_OCT\Output\test_raw_data.raw");
 	// TODO: warum nicht .srm?
 
 	if (getError(message, 1024))
@@ -175,7 +175,7 @@ void AveragingAndImagingSpeed()
 
 	ColoringHandle Coloring = createColoring32Bit(ColorScheme_BlackAndWhite, Coloring_RGBA);
 	setColoringBoundaries(Coloring, 0.0, 70.0);
-	exportDataAsImage(BScan, Coloring, ColoredDataExport_JPG, Direction_3, "C:\\test_oct_image.jpg", 0);
+	exportDataAsImage(BScan, Coloring, ColoredDataExport_JPG, Direction_3, "C:\Ajay_OCT\Output\test_oct_image.jpg", 0);
 
 	if (getError(message, 1024))
 	{
@@ -343,27 +343,108 @@ void ModifyScanPatterns()
 	(void) getchar();
 }
 
+void AScanAcquisitionAndExportData()
+{
+	/** STEP-1: initialization of device, probe and processing handles
+	1.1 OCTDeviceHandle -> the complete device will be initialized, the SLD will be switched on and all start-up dependent calibration will be performed.
+	1.2 ProcessingHandle -> used to create A-scans, B-scans, volume scans out of directly measured spectra.
+	1.3 ProbeHandle -> It needs to calibrated to map the suitable output voltages(for analog galvo drivers) or digital values (digital galvo drivers). **/
+	OCTDeviceHandle Dev = initDevice();
+	ProbeHandle Probe = initProbe(Dev, "Probe_Standard_OCTG_LSM03.ini");
+	ProcessingHandle Proc = createProcessingForDevice(Dev);
+
+	/** STEP-2: initialize raw, and processed, data handles	
+	2.1 RawDataHandle -> will be used to get the raw data handle and will contain the data from the detector (e.g. line scan camera is SD-OCT systems) without any modification
+	2.2 DataHandle -> will be used for the processed data and will contain the OCT image. **/
+	RawDataHandle Raw = createRawData();
+	DataHandle AScan = createData();
+
+	/** STEP-3: Define Scan Pattern **/
+	ScanPatternHandle Pattern = createAScanPattern(Probe, 1, 0, 0);
+
+	/** STEP-4: start the measurement to acquire the specified scan pattern once.	
+	4.1 AcquisitionType -> Determines the kind of acquistion process. The type of acquisition process affects 
+	e.g. whether consecutive B scans are acquired or if it is possible to lose some data. 
+	4.1.1 Acquisition_AsyncContinuous -> Specifies an asynchronous infinite/continuous measurement. With this a
+	quisition type an infinite loop to acquire the specified scan pattern will be started  and stopped with the 
+	call of stopMeasurment(). Several buffers will be created internally to hold the data of the specified scan 
+	pattern several times. With this acquisition mode it is possible to lose data if the acquisition is faster than 
+	the copying from the framegarbber with getRawdata(). If you lose data you will always lose a whole frame, 
+	e.g. a whole B-scan. The acquisition thread runs independently from the thread for grabbing the data to 
+	acquire the data as fast as possible. To get the information whether the data of a whole scan pattern got 
+	lost please use getRawDataPropertyInt() wit RawData_LostFramers when grabbing the data.
+	4.1.2 Acquisition_AsyncFinite -> Specifies an asychronous finite measurment. With this acquistions type
+	enough memory is created internally to holde the data for the whole scan pattern once. Therefore it 
+	is guaranteed to grab all the data and not losing frames. Please note that it is possible to acquire the
+	scan pattern once only with this acquisition mode.
+	4.1.3 Acquisition_Sync -> Specifies an synchronous measurment. With this acquisition mode the acquisition of the
+	specified scan pattern will be started with the call of getRawData(). You can interpret this acquisition type
+	as a software trigger to start the measurment, To start the data acquisition externally please see the
+	chapter in the software manual about external triggering. **/
+	startMeasurement(Dev, Pattern, Acquisition_AsyncFinite);
+
+	/** STEP-5: Grabs the spectral data form the framegrabber and copies it to the RawDataHandle().	**/
+	getRawData(Dev, Raw);
+
+	/** STEP-6: Specifies the output of the processing routine and executes the prcoessing. **/
+	setProcessedDataOutput(Proc, AScan);
+	executeProcessing(Proc, Raw);
+
+	/** STEP-7: Stops the measurement **/
+	stopMeasurement(Dev);
+
+	/** STEP-8: Export the data	**/
+	exportData(AScan, DataExportFormat::DataExport_CSV, "C:\Ajay_OCT\Output\test_oct_data.csv");
+
+	/** STEP-9: Clear the memory **/
+	// Pattern
+	clearScanPattern(Pattern);
+	// Data
+	clearData(AScan);
+	clearRawData(Raw);
+	// Handles
+	clearProcessing(Proc);
+	closeProbe(Probe);
+	closeDevice(Dev);
+
+	/** STEP-10:  check if an error occured and write it to the command prompt **/
+	char message[1024];
+	if (getError(message, 1024))
+	{
+		cout << "ERROR: " << message << endl;
+		(void)getchar();
+		return;
+	}
+
+	/** waits to close the command prompt until an input from the user is done **/
+	(void)getchar();
+}
+
+
 int main()
 {
 	cout << "The following simple demonstration pograms are available: " << endl;
-	cout << "a: Single B-scan acquisition \n";
-	cout << "b: Data export as csv and jpg format \n";
-	cout << "c: Adjusting image quality by averaging \n";
-	cout << "d: Acquisition of a volume pattern with averaging\n";
-	cout << "e: Rotation, shifting and zooming of a scan pattern\n";
+	cout << "a: Single A-scan acquisition and export the data \n";
+	cout << "b: Single B-scan acquisition \n";
+	cout << "c: Data export as csv and jpg format \n";
+	cout << "d: Adjusting image quality by averaging \n";
+	cout << "e: Acquisition of a volume pattern with averaging\n";
+	cout << "f: Rotation, shifting and zooming of a scan pattern\n";
 
 	char c = getchar();
 	switch (c)
 	{
-	case 'a': SimpleMeasurement();
+	case 'a': AScanAcquisitionAndExportData();
 		break;
-	case 'b': ExportDataAndImage();
+	case 'b': SimpleMeasurement();
 		break;
-	case 'c': AveragingAndImagingSpeed();
+	case 'c': ExportDataAndImage();
 		break;
-	case 'd': VolumeScanPattern();
+	case 'd': AveragingAndImagingSpeed();
 		break;
-	case 'e': ModifyScanPatterns();
+	case 'e': VolumeScanPattern();
+		break;
+	case 'f': ModifyScanPatterns();
 		break;
 	}
 	(void) getchar();
