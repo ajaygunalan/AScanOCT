@@ -36,7 +36,7 @@ void SimpleMeasurement()
 	stopMeasurement(Dev);
 
 	// exports the processed data to a csv-file to the specified folder. For more information about the data export see #ExportDataAndImage
-	exportData(BScan, DataExportFormat::DataExport_CSV, "C:\Ajay_OCT\Output\test_oct_data.csv");
+	exportData(BScan, DataExportFormat::DataExport_CSV, "C:\\Ajay_OCT\\Output\\test_oct_data.csv");
 
 	// clear up everything 
 	clearScanPattern(Pattern);
@@ -91,7 +91,7 @@ void ExportDataAndImage()
 	stopMeasurement(Dev);
 
 	// Exports the processed data to a csv-file to the specified folder. Several different export formats are available, see #DataExportFormat
-	exportData(BScan, DataExportFormat::DataExport_CSV, "C:\Ajay_OCT\Output\test_oct_data.csv");
+	exportData(BScan, DataExportFormat::DataExport_CSV, "C:\\Ajay_OCT\\Output\\test_oct_data.csv");
 
 	// The OCT image can be exported as an image in common image format as well. It needs to be colored for that, e.g. the colormap and boundaries for the coloring need to be defined.
 	// #ColoringHandle with specified #ColorScheme, here simple black and white, and #ColoringByteOrder
@@ -100,10 +100,10 @@ void ExportDataAndImage()
 	setColoringBoundaries(Coloring, 0.0, 70.0);
 	// Exports the processed data to an image with the specified slice normal direction since this will result in 2D-images.
 	// To get the B-scan in one image with depth and scan field as axes for a single B-scan #Direction_3 is chosen.
-	exportDataAsImage(BScan, Coloring, ColoredDataExport_JPG, Direction_3, "C:\Ajay_OCT\Output\test_oct_image.jpg", ExportOption_DrawScaleBar | ExportOption_DrawMarkers | ExportOption_UsePhysicalAspectRatio);
+	exportDataAsImage(BScan, Coloring, ColoredDataExport_JPG, Direction_3, "C:\\Ajay_OCT\\Output\\test_oct_image.jpg", ExportOption_DrawScaleBar | ExportOption_DrawMarkers | ExportOption_UsePhysicalAspectRatio);
 
 	// The unprocessed data from the detector in #RawDataHandle can be exported as well, here to a binary raw/srm file
-	exportRawData(Raw, RawDataExportFormat::RawDataExport_RAW, "C:\Ajay_OCT\Output\test_raw_data.raw");
+	exportRawData(Raw, RawDataExportFormat::RawDataExport_SRR, "C:\\Ajay_OCT\\Output\\test_raw_data.raw");
 	// TODO: warum nicht .srm?
 
 	if (getError(message, 1024))
@@ -175,7 +175,7 @@ void AveragingAndImagingSpeed()
 
 	ColoringHandle Coloring = createColoring32Bit(ColorScheme_BlackAndWhite, Coloring_RGBA);
 	setColoringBoundaries(Coloring, 0.0, 70.0);
-	exportDataAsImage(BScan, Coloring, ColoredDataExport_JPG, Direction_3, "C:\Ajay_OCT\Output\test_oct_image.jpg", 0);
+	exportDataAsImage(BScan, Coloring, ColoredDataExport_JPG, Direction_3, "C:\\Ajay_OCT\\Output\\test_oct_image.jpg", 0);
 
 	if (getError(message, 1024))
 	{
@@ -394,7 +394,7 @@ void AScanAcquisitionAndExportData()
 	stopMeasurement(Dev);
 
 	/** STEP-8: Export the data	**/
-	exportData(AScan, DataExportFormat::DataExport_CSV, "C:\Ajay_OCT\Output\test_oct_data.csv");
+	exportData(AScan, DataExportFormat::DataExport_CSV, "C:\\Ajay_OCT\\Output\\test_oct_data.csv");
 
 	/** STEP-9: Clear the memory **/
 	// Pattern
