@@ -36,7 +36,7 @@ void SimpleMeasurement()
 	stopMeasurement(Dev);
 
 	// exports the processed data to a csv-file to the specified folder. For more information about the data export see #ExportDataAndImage
-	exportData(BScan, DataExportFormat::DataExport_CSV, "C:\\Ajay_OCT\\Output\\test_oct_data.csv");
+	exportData(BScan, DataExportFormat::DataExport_CSV, "C:\\Ajay_OCT\\MATLAB\\OCTExportData\\BScanProcessed.csv");
 
 	// clear up everything 
 	clearScanPattern(Pattern);
@@ -91,7 +91,7 @@ void ExportDataAndImage()
 	stopMeasurement(Dev);
 
 	// Exports the processed data to a csv-file to the specified folder. Several different export formats are available, see #DataExportFormat
-	exportData(BScan, DataExportFormat::DataExport_CSV, "C:\\Ajay_OCT\\Output\\test_oct_data.csv");
+	exportData(BScan, DataExportFormat::DataExport_CSV, "C:\\Ajay_OCT\\MATLAB\\OCTExportData\\BScanProcessed.csv");
 
 	// The OCT image can be exported as an image in common image format as well. It needs to be colored for that, e.g. the colormap and boundaries for the coloring need to be defined.
 	// #ColoringHandle with specified #ColorScheme, here simple black and white, and #ColoringByteOrder
@@ -100,10 +100,11 @@ void ExportDataAndImage()
 	setColoringBoundaries(Coloring, 0.0, 70.0);
 	// Exports the processed data to an image with the specified slice normal direction since this will result in 2D-images.
 	// To get the B-scan in one image with depth and scan field as axes for a single B-scan #Direction_3 is chosen.
-	exportDataAsImage(BScan, Coloring, ColoredDataExport_JPG, Direction_3, "C:\\Ajay_OCT\\Output\\test_oct_image.jpg", ExportOption_DrawScaleBar | ExportOption_DrawMarkers | ExportOption_UsePhysicalAspectRatio);
+	exportDataAsImage(BScan, Coloring, ColoredDataExport_JPG, Direction_3, "C:\\Ajay_OCT\\MATLAB\\OCTExportData\\BScanImage.jpg", ExportOption_DrawScaleBar | ExportOption_DrawMarkers | ExportOption_UsePhysicalAspectRatio);
 
 	// The unprocessed data from the detector in #RawDataHandle can be exported as well, here to a binary raw/srm file
-	exportRawData(Raw, RawDataExportFormat::RawDataExport_SRR, "C:\\Ajay_OCT\\Output\\test_raw_data.raw");
+	exportRawData(Raw, RawDataExportFormat::RawDataExport_SRR, "C:\\Ajay_OCT\\MATLAB\\OCTExportData\\BScanRawSRR.csv");
+	exportRawData(Raw, RawDataExportFormat::RawDataExport_RAW, "C:\\Ajay_OCT\\MATLAB\\OCTExportData\\BScan.raw");
 	// TODO: warum nicht .srm?
 
 	if (getError(message, 1024))
@@ -175,7 +176,7 @@ void AveragingAndImagingSpeed()
 
 	ColoringHandle Coloring = createColoring32Bit(ColorScheme_BlackAndWhite, Coloring_RGBA);
 	setColoringBoundaries(Coloring, 0.0, 70.0);
-	exportDataAsImage(BScan, Coloring, ColoredDataExport_JPG, Direction_3, "C:\\Ajay_OCT\\Output\\test_oct_image.jpg", 0);
+	exportDataAsImage(BScan, Coloring, ColoredDataExport_JPG, Direction_3, "C:\\Ajay_OCT\\MATLAB\\OCTExportData\\test_oct_image.jpg", 0);
 
 	if (getError(message, 1024))
 	{
@@ -381,7 +382,7 @@ void AScanAcquisitionAndExportData()
 	specified scan pattern will be started with the call of getRawData(). You can interpret this acquisition type
 	as a software trigger to start the measurment, To start the data acquisition externally please see the
 	chapter in the software manual about external triggering. **/
-	startMeasurement(Dev, Pattern, Acquisition_AsyncFinite);
+	startMeasurement(Dev, Pattern, Acquisition_AsyncContinuous);
 
 	/** STEP-5: Grabs the spectral data form the framegrabber and copies it to the RawDataHandle().	**/
 	getRawData(Dev, Raw);
@@ -394,7 +395,20 @@ void AScanAcquisitionAndExportData()
 	stopMeasurement(Dev);
 
 	/** STEP-8: Export the data	**/
-	exportData(AScan, DataExportFormat::DataExport_CSV, "C:\\Ajay_OCT\\Output\\test_oct_data.csv");
+	exportData(AScan, DataExportFormat::DataExport_CSV, "C:\\Ajay_OCT\\MATLAB\\OCTExportData\\AScanProcessed.csv"); 
+
+	// The OCT image can be exported as an image in common image format as well. It needs to be colored for that, e.g. the colormap and boundaries for the coloring need to be defined.
+	// #ColoringHandle with specified #ColorScheme, here simple black and white, and #ColoringByteOrder
+	//ColoringHandle Coloring = createColoring32Bit(ColorScheme_BlackAndWhite, Coloring_RGBA);
+	// set the boundaries for the colormap, 0.0 as lower and 70.0 as upper boundary are a good choice normally.
+	//setColoringBoundaries(Coloring, 0.0, 70.0);
+	// Exports the processed data to an image with the specified slice normal direction since this will result in 2D-images.
+	// To get the B-scan in one image with depth and scan field as axes for a single B-scan #Direction_3 is chosen.
+	// exportDataAsImage(AScan, Coloring, ColoredDataExport_JPG, Direction_1, "C:\\Ajay_OCT\\MATLAB\\OCTExportData\\test_oct_image.jpg", ExportOption_DrawScaleBar | ExportOption_DrawMarkers | ExportOption_UsePhysicalAspectRatio);
+	// The unprocessed data from the detector in #RawDataHandle can be exported as well, here to a binary raw/srm file
+	exportRawData(Raw, RawDataExportFormat::RawDataExport_SRR, "C:\\Ajay_OCT\\MATLAB\\OCTExportData\\AScanRawSRR.csv");
+	exportRawData(Raw, RawDataExportFormat::RawDataExport_RAW, "C:\\Ajay_OCT\\MATLAB\\OCTExportData\\AScanRaw.csv");
+	// TODO: warum nicht .srm?
 
 	/** STEP-9: Clear the memory **/
 	// Pattern
