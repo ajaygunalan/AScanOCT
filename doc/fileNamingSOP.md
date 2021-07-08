@@ -24,6 +24,6 @@
 #### Data Files
 
 1. Data should be stored either in `AScanData\"date"` or `BScanData\"date"` folder. `date` shoulde of the format `8_july_21`.
-2. files should name properly like `AScan_Probe_1_Processed.csv` or `AScan_Probe_1.raw`. Type Scan + Probe + Type of data.
+2. Files should name properly like `AScan_Probe_1_Processed.csv` or `AScan_Probe_1.raw`. Type Scan + Probe + Type of data is the template for files.
 3. README.md should contain info about the Probe_1.
 
