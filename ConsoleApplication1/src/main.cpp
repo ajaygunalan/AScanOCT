@@ -75,6 +75,71 @@ void ExportDataAndImage()
 	if (getError(message, 1024))
 	{
 		cout << "ERROR: " << message << endl;
+		_getch();
+		return;
+	}
+
+	ScanPatternHandle Pattern = createBScanPattern(Probe, 2.0, 1024);
+
+	startMeasurement(Dev, Pattern, Acquisition_AsyncFinite);
+
+	getRawData(Dev, Raw);
+
+	setProcessedDataOutput(Proc, BScan);
+	executeProcessing(Proc, Raw);
+
+	stopMeasurement(Dev);
+
+	// Exports the processed data to a csv-file to the specified folder. Several different export formats are available, see #DataExportFormat
+	exportData(BScan, DataExportFormat::DataExport_CSV, "C:\\test_oct_data.csv");
+
+	// The OCT image can be exported as an image in common image format as well. It needs to be colored for that, e.g. the colormap and boundaries for the coloring need to be defined.
+	// #ColoringHandle with specified #ColorScheme, here simple black and white, and #ColoringByteOrder
+	ColoringHandle Coloring = createColoring32Bit(ColorScheme_BlackAndWhite, Coloring_RGBA);
+	// set the boundaries for the colormap, 0.0 as lower and 70.0 as upper boundary are a good choice normally.
+	setColoringBoundaries(Coloring, 0.0, 70.0);
+	// Exports the processed data to an image with the specified slice normal direction since this will result in 2D-images.
+	// To get the B-scan in one image with depth and scan field as axes for a single B-scan #Direction_3 is chosen.
+	exportDataAsImage(BScan, Coloring, ColoredDataExport_JPG, Direction_3, "C:\\test_oct_image.jpg", ExportOption_DrawScaleBar | ExportOption_DrawMarkers | ExportOption_UsePhysicalAspectRatio);
+
+	// The unprocessed data from the detector in #RawDataHandle can be exported as well, here to a binary raw/srm file
+	exportRawData(Raw, RawDataExportFormat::RawDataExport_RAW, "C::\\test_raw_data.raw");
+	// TODO: warum nicht .srm?
+
+	if (getError(message, 1024))
+	{
+		cout << "ERROR: " << message << endl;
+		_getch();
+		return;
+	}
+
+	clearScanPattern(Pattern);
+
+	clearData(BScan);
+	clearRawData(Raw);
+
+	clearProcessing(Proc);
+	closeProbe(Probe);
+	closeDevice(Dev);
+
+	_getch();
+}
+
+/**
+void ExportDataAndImage()
+{
+	char message[1024];
+
+	OCTDeviceHandle Dev = initDevice();
+	ProbeHandle Probe = initProbe(Dev, "Probe");
+	ProcessingHandle Proc = createProcessingForDevice(Dev);
+
+	RawDataHandle Raw = createRawData();
+	DataHandle BScan = createData();
+
+	if (getError(message, 1024))
+	{
+		cout << "ERROR: " << message << endl;
 		(void) getchar();
 		return;
 	}
@@ -125,7 +190,7 @@ void ExportDataAndImage()
 
 	(void) getchar();
 }
-
+**/
 void AveragingAndImagingSpeed()
 {
 	char message[1024];
