@@ -92,7 +92,11 @@ void ExportDataAndImage()
 	stopMeasurement(Dev);
 
 	// Exports the processed data to a csv-file to the specified folder. Several different export formats are available, see #DataExportFormat
-	exportData(BScan, DataExportFormat::DataExport_CSV, "C:\\test_oct_data_6.csv");
+	exportData(BScan, DataExportFormat::DataExport_CSV, "C:\\test_oct_data_9.csv");
+
+	// The unprocessed data from the detector in #RawDataHandle can be exported as well, here to a binary raw/srm file
+	exportRawData(Raw, RawDataExportFormat::RawDataExport_RAW, "C:\\test_raw_data_raw9.raw");
+	exportRawData(Raw, RawDataExportFormat::RawDataExport_SRR, "C:\\test_raw_data_srr9.txt");
 
 	// The OCT image can be exported as an image in common image format as well. It needs to be colored for that, e.g. the colormap and boundaries for the coloring need to be defined.
 	// #ColoringHandle with specified #ColorScheme, here simple black and white, and #ColoringByteOrder
@@ -101,11 +105,9 @@ void ExportDataAndImage()
 	setColoringBoundaries(Coloring, 0.0, 70.0);
 	// Exports the processed data to an image with the specified slice normal direction since this will result in 2D-images.
 	// To get the B-scan in one image with depth and scan field as axes for a single B-scan #Direction_3 is chosen.
-	exportDataAsImage(BScan, Coloring, ColoredDataExport_JPG, Direction_3, "C:\\test_oct_image_6.jpg", ExportOption_DrawScaleBar | ExportOption_DrawMarkers | ExportOption_UsePhysicalAspectRatio);
+	exportDataAsImage(BScan, Coloring, ColoredDataExport_JPG, Direction_3, "C:\\test_oct_image_9.jpg", ExportOption_DrawScaleBar | ExportOption_DrawMarkers | ExportOption_UsePhysicalAspectRatio);
 
-	// The unprocessed data from the detector in #RawDataHandle can be exported as well, here to a binary raw/srm file
-	exportRawData(Raw, RawDataExportFormat::RawDataExport_RAW, "C::\\test_raw_data_6.raw");
-	exportRawData(Raw, RawDataExportFormat::RawDataExport_SRR, "C::\\test_raw_data_6.srr");
+
 	// TODO: warum nicht .srm?
 
 	if (getError(message, 1024))
