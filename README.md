@@ -25,4 +25,5 @@ To get A-scan OCT using bench top setup and Thorlabs SDK and to visualize both s
 The above three steps proves:
 * The ability to use SDK
 * The reference arm is correctly setup. 
+* Know-how of Optical Alignment
 4. How to interface our [custom endoscopic electromangtic scanner](https://ieeexplore.ieee.org/abstract/document/8629990) with thorlabs imagaing system?. 
